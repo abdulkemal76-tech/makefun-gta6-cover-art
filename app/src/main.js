@@ -1,5 +1,6 @@
-// Wires the page: photos, layouts, caption, grade, per-panel crop, export.
-// A `?shot=` query sets up a fixed scene for a screenshot instead (./shots.js).
+// Wires the page together: sample photos, layouts, caption, grade,
+// per-panel cropping, and PNG export. A `?shot=` query instead sets up
+// a fixed scene for a screenshot (see ./shots.js).
 import { drawCover, LAYOUTS } from './cover.js';
 import { runShot } from './shots.js';
 
@@ -7,6 +8,8 @@ const canvas = document.getElementById('cover');
 const status = document.getElementById('status');
 const SAMPLES = ['boulevard', 'colony', 'ocean', 'sunset'];
 
+// Nine panel slots: enough for the biggest layout (grid9); smaller
+// layouts simply use the first few.
 const state = {
   layout: 'grid4',
   grade: 'sunset',
@@ -16,7 +19,7 @@ const state = {
   halftone: false,
   panels: Array.from({ length: 9 }, () => ({ photo: null, zoom: 1, ox: 0, oy: 0 })),
 };
-let photos = []; // { img, name }
+let photos = []; // entries look like { img, name }
 let selectedPanel = 0;
 let activePhoto = 0;
 
@@ -39,10 +42,14 @@ async function loadSamples() {
     try {
       const img = await loadImage(`samples/${name}.jpg`);
       photos.push({ img, name });
-    } catch { /* a missing sample just leaves the tray shorter */ }
+    } catch {
+      // A missing sample just makes the tray shorter; the app keeps working.
+    }
   }
-  // Default fill: spread the samples across the panels.
-  state.panels.forEach((p, i) => { p.photo = photos[i % photos.length]?.img ?? null; });
+  // Default fill: spread the samples across the panels in order.
+  state.panels.forEach((p, i) => {
+    p.photo = photos[i % photos.length]?.img ?? null;
+  });
 }
 
 function renderTray() {
@@ -56,10 +63,11 @@ function renderTray() {
     el.setAttribute('aria-pressed', String(i === activePhoto));
     el.addEventListener('click', () => {
       activePhoto = i;
-      state.panels[selectedPanel].photo = p.img;
-      state.panels[selectedPanel].zoom = 1;
-      state.panels[selectedPanel].ox = 0;
-      state.panels[selectedPanel].oy = 0;
+      const panel = state.panels[selectedPanel];
+      panel.photo = p.img;
+      panel.zoom = 1;
+      panel.ox = 0;
+      panel.oy = 0;
       renderTray();
       redraw();
     });
@@ -107,6 +115,7 @@ function syncPanelUI() {
   document.getElementById('zoomRange').value = String(p.zoom);
 }
 
+// Which panel (if any) sits under a pointer position on the canvas.
 function panelAt(clientX, clientY) {
   const r = canvas.getBoundingClientRect();
   const fx = (clientX - r.left) / r.width;
@@ -116,12 +125,14 @@ function panelAt(clientX, clientY) {
   const artH = 1 - captionH;
   for (let i = layout.panels.length - 1; i >= 0; i--) {
     const p = layout.panels[i];
-    if (fx >= p.x && fx < p.x + p.w && fy >= p.y * artH && fy < (p.y + p.h) * artH) return i;
+    const insideX = fx >= p.x && fx < p.x + p.w;
+    const insideY = fy >= p.y * artH && fy < (p.y + p.h) * artH;
+    if (insideX && insideY) return i;
   }
   return -1;
 }
 
-// Drag to pan the selected panel's photo; wheel to zoom it.
+// Drag a panel to pan its photo; scroll over it to zoom.
 let dragging = false;
 let lastX = 0;
 let lastY = 0;
@@ -139,19 +150,27 @@ canvas.addEventListener('pointermove', (e) => {
   if (!dragging) return;
   const r = canvas.getBoundingClientRect();
   const p = state.panels[selectedPanel];
-  p.ox = Math.max(-0.5, Math.min(0.5, p.ox + (e.clientX - lastX) / r.width));
-  p.oy = Math.max(-0.5, Math.min(0.5, p.oy + (e.clientY - lastY) / r.height));
+  const clamp = (v) => Math.max(-0.5, Math.min(0.5, v));
+  p.ox = clamp(p.ox + (e.clientX - lastX) / r.width);
+  p.oy = clamp(p.oy + (e.clientY - lastY) / r.height);
   lastX = e.clientX;
   lastY = e.clientY;
   redraw();
 });
-canvas.addEventListener('pointerup', () => { dragging = false; });
-canvas.addEventListener('wheel', (e) => {
-  e.preventDefault();
-  const p = state.panels[selectedPanel];
-  p.zoom = Math.max(1, Math.min(3, p.zoom * (e.deltaY < 0 ? 1.08 : 0.93)));
-  redraw();
-}, { passive: false });
+canvas.addEventListener('pointerup', () => {
+  dragging = false;
+});
+canvas.addEventListener(
+  'wheel',
+  (e) => {
+    e.preventDefault();
+    const p = state.panels[selectedPanel];
+    const factor = e.deltaY < 0 ? 1.08 : 0.93;
+    p.zoom = Math.max(1, Math.min(3, p.zoom * factor));
+    redraw();
+  },
+  { passive: false },
+);
 
 document.getElementById('panelSelect').addEventListener('change', (e) => {
   selectedPanel = Number(e.target.value);
@@ -172,15 +191,35 @@ document.getElementById('photoInput').addEventListener('change', async (e) => {
 document.getElementById('fillAll').addEventListener('click', () => {
   const img = photos[activePhoto]?.img;
   if (!img) return;
-  state.panels.forEach((p) => { p.photo = img; p.zoom = 1; p.ox = 0; p.oy = 0; });
+  state.panels.forEach((p) => {
+    p.photo = img;
+    p.zoom = 1;
+    p.ox = 0;
+    p.oy = 0;
+  });
   redraw();
   status.textContent = 'All panels filled with the selected photo.';
 });
-document.getElementById('titleInput').addEventListener('input', (e) => { state.title = e.target.value; redraw(); });
-document.getElementById('subtitleInput').addEventListener('input', (e) => { state.subtitle = e.target.value; redraw(); });
-document.getElementById('gradeSelect').addEventListener('change', (e) => { state.grade = e.target.value; redraw(); });
-document.getElementById('frameCheck').addEventListener('change', (e) => { state.frame = e.target.checked; redraw(); });
-document.getElementById('halftoneCheck').addEventListener('change', (e) => { state.halftone = e.target.checked; redraw(); });
+document.getElementById('titleInput').addEventListener('input', (e) => {
+  state.title = e.target.value;
+  redraw();
+});
+document.getElementById('subtitleInput').addEventListener('input', (e) => {
+  state.subtitle = e.target.value;
+  redraw();
+});
+document.getElementById('gradeSelect').addEventListener('change', (e) => {
+  state.grade = e.target.value;
+  redraw();
+});
+document.getElementById('frameCheck').addEventListener('change', (e) => {
+  state.frame = e.target.checked;
+  redraw();
+});
+document.getElementById('halftoneCheck').addEventListener('change', (e) => {
+  state.halftone = e.target.checked;
+  redraw();
+});
 
 document.querySelectorAll('.export').forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -199,8 +238,8 @@ document.querySelectorAll('.export').forEach((btn) => {
   });
 });
 
-// Export helper used by screenshots: render the current state at a size and
-// return the PNG as a data URL (no download, so a shot page can read it).
+// Render the current state at a size and hand back a PNG data URL, so a
+// screenshot page can read the export without triggering a download.
 export function exportPNG(w, h) {
   const off = document.createElement('canvas');
   off.width = w;

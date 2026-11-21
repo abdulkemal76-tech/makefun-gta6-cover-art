@@ -12,7 +12,7 @@
 - **Any photo**: add your own (file picker or drag in), or use the 4 included samples. Click a photo, then a panel, to place it; **fill all panels** with one photo in one click
 - **Crop per panel**: click a panel to select it, drag on the cover to move its photo, scroll (or the zoom slider) to zoom — each panel keeps its own crop
 - **Caption**: editable title + subtitle in bold condensed Bebas Neue lettering (OFL, bundled) over a sunset gradient
-- **Colour grades**: Sunset, Neon nights, Vice pink & teal, Mono noir, Natural — plus white frames and a halftone-dot option
+- **Colour grades**: Sunset, Neon nights, Vice pink &amp; teal, Vice Neon, Mono noir, Natural — plus white frames and a halftone-dot option
 - **Export PNG in one click**: 1080 × 1080, 1080 × 1350, 1920 × 1080
 
 ## Offline & private
@@ -32,8 +32,12 @@ Or open `app/index.html` directly in a desktop browser.
 - `app/index.html`, `app/style.css`, `app/src/cover.js` (the renderer), `app/src/main.js`, `app/src/shots.js` (fixed `?shot=` scenes for screenshots)
 - `app/fonts/BebasNeue-Regular.ttf` — Bebas Neue, SIL Open Font License
 - `app/samples/` — real photographs only, all free to use: `boulevard.jpg` (woman with a red convertible at sunset, from the kit's starter samples), `colony.jpg` ("Miami Beach, Ocean Drive Hotel, The Colony Hotel" by tempoworld.net, CC BY-SA, via Flickr/Openverse), `ocean.jpg` ("Miami Ocean Drive Night" by patrickcam, CC BY, via Flickr/Openverse), `sunset.jpg` ("Miami Downtown" by Piutus, CC BY, via Flickr/Openverse). No AI-generated images are used as samples; the app's grades only enhance real photos.
-- `main.ts` — copies `app/` and `screenshots/` to `/output` and writes `/output/dossier.json`
+- `main.ts` — copies `app/` and `screenshots/` to `/output` and writes `/output/dossier.json` plus `/output/app.json`, a manifest of the maker's layouts, grades, samples and export sizes
 - `screenshots/` — the app in a browser with a photo loaded, and covers it exported
+
+## Version
+
+v2.0.0 — rebuilt from scratch in a recorded session: every source file rewritten, the font re-bundled, the sample photos re-encoded, and all four screenshots retaken.
 
 ---
 
