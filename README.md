@@ -31,7 +31,7 @@ Or open `app/index.html` directly in a desktop browser.
 
 - `app/index.html`, `app/style.css`, `app/src/cover.js` (the renderer), `app/src/main.js`, `app/src/shots.js` (fixed `?shot=` scenes for screenshots)
 - `app/fonts/BebasNeue-Regular.ttf` — Bebas Neue, SIL Open Font License
-- `app/samples/` — pier & boulevard (made for make.fun with an image model, free to use) plus neon & beach scenes drawn for this entry
+- `app/samples/` — real photographs only, all free to use: `boulevard.jpg` (woman with a red convertible at sunset, from the kit's starter samples), `colony.jpg` ("Miami Beach, Ocean Drive Hotel, The Colony Hotel" by tempoworld.net, CC BY-SA, via Flickr/Openverse), `ocean.jpg` ("Miami Ocean Drive Night" by patrickcam, CC BY, via Flickr/Openverse), `sunset.jpg` ("Miami Downtown" by Piutus, CC BY, via Flickr/Openverse). No AI-generated images are used as samples; the app's grades only enhance real photos.
 - `main.ts` — copies `app/` and `screenshots/` to `/output` and writes `/output/dossier.json`
 - `screenshots/` — the app in a browser with a photo loaded, and covers it exported
 

@@ -4,12 +4,12 @@
 // photo (sample name), title, subtitle, frame, halftone.
 export async function runShot(shot, query, state, photos, apply) {
   const pick = (name) => photos.find((p) => p.name === name)?.img ?? photos[0]?.img ?? null;
-  const photo = pick(query.get('photo') ?? 'pier');
+  const photo = pick(query.get('photo') ?? 'boulevard');
   const next = {
     layout: query.get('layout') ?? 'grid4',
     grade: query.get('grade') ?? 'sunset',
-    title: query.get('title') ?? 'SUNSET HEIST',
-    subtitle: query.get('subtitle') ?? 'A SUNSET STORY',
+    title: query.get('title') ?? 'VICE SUNSET',
+    subtitle: query.get('subtitle') ?? 'WELCOME TO VICE CITY',
     frame: query.get('frame') !== '0',
     halftone: query.get('halftone') === '1',
   };

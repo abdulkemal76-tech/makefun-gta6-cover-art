@@ -5,13 +5,13 @@ import { runShot } from './shots.js';
 
 const canvas = document.getElementById('cover');
 const status = document.getElementById('status');
-const SAMPLES = ['pier', 'boulevard', 'neon', 'beach'];
+const SAMPLES = ['boulevard', 'colony', 'ocean', 'sunset'];
 
 const state = {
   layout: 'grid4',
   grade: 'sunset',
-  title: 'SUNSET HEIST',
-  subtitle: 'A SUNSET STORY',
+  title: 'VICE SUNSET',
+  subtitle: 'WELCOME TO VICE CITY',
   frame: true,
   halftone: false,
   panels: Array.from({ length: 9 }, () => ({ photo: null, zoom: 1, ox: 0, oy: 0 })),

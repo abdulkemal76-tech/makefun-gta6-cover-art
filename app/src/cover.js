@@ -45,6 +45,7 @@ const GRADES = {
   sunset: { filter: 'saturate(1.35) contrast(1.12) brightness(1.03)', overlay: ['rgba(255,120,40,0.20)', 'rgba(190,30,110,0.30)'] },
   neon: { filter: 'saturate(1.7) contrast(1.15) hue-rotate(-12deg)', overlay: ['rgba(0,220,255,0.16)', 'rgba(255,0,150,0.26)'] },
   vice: { filter: 'saturate(1.45) contrast(1.08)', overlay: ['rgba(255,80,180,0.22)', 'rgba(0,200,200,0.20)'] },
+  viceneon: { filter: 'saturate(1.85) contrast(1.2) hue-rotate(-8deg) brightness(1.04)', overlay: ['rgba(255,40,170,0.30)', 'rgba(0,200,255,0.26)'] },
   mono: { filter: 'grayscale(1) contrast(1.25) brightness(1.05)', overlay: null },
   none: { filter: 'none', overlay: null },
 };
@@ -102,7 +103,11 @@ export function drawCover(canvas, state) {
   const W = canvas.width;
   const H = canvas.height;
   const layout = LAYOUTS[state.layout] ?? LAYOUTS.grid4;
-  const grade = GRADES[state.grade] ?? GRADES.sunset;
+  let grade = GRADES[state.grade] ?? GRADES.sunset;
+  // Halftone dots flatten the photo a little, so boost contrast to compensate.
+  if (state.halftone) {
+    grade = { ...grade, filter: grade.filter === 'none' ? 'contrast(1.08)' : `${grade.filter} contrast(1.08)` };
+  }
   const gap = Math.min(W, H) * GAP;
 
   // Deep purple poster background.
