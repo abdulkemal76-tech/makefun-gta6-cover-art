@@ -1,0 +1,26 @@
+[
+  {
+    "name": "1-cover.jpg",
+    "query": "?shot=cover&photo=pier&layout=grid4&grade=sunset&title=SUNSET%20HEIST&subtitle=A%20SUNSET%20STORY",
+    "w": 1024,
+    "h": 1024
+  },
+  {
+    "name": "2-editor.jpg",
+    "query": "?shot=editor&photo=boulevard&layout=hero3&grade=neon&title=BOULEVARD%20QUEEN&subtitle=NEON%20NIGHTS",
+    "w": 1280,
+    "h": 900
+  },
+  {
+    "name": "3-cover.jpg",
+    "query": "?shot=cover&photo=neon&layout=tilted&grade=vice&title=NEON%20PALMS&subtitle=MIDNIGHT%20DRIVE",
+    "w": 1024,
+    "h": 1280
+  },
+  {
+    "name": "4-cover.jpg",
+    "query": "?shot=cover&photo=beach&layout=grid9&grade=sunset&title=GOLDEN%20HOUR&subtitle=NINE%20WAYS%20HOME",
+    "w": 1024,
+    "h": 1024
+  }
+]
